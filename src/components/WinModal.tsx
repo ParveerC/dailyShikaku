@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { getStoredPlayerName } from "../lib/scores";
-import type { Difficulty, ScoreInput } from "../types";
+import type { Difficulty, Score, ScoreInput } from "../types";
 import { formatTime } from "../utils/formatTime";
 
 interface WinModalProps {
@@ -55,13 +55,13 @@ export function WinModal({
     >
       <div className="w-full max-w-sm rounded-xl border border-border bg-card p-8 shadow-xl">
         <div className="text-5xl mb-4 text-center" aria-hidden>
-          🎉
+          ðŸŽ‰
         </div>
         <h2 id="win-title" className="text-2xl font-bold text-card-foreground mb-2 text-center">
           Puzzle Solved!
         </h2>
         <p className="text-muted-foreground mb-2 text-center text-sm">
-          {puzzleName} · {difficulty}
+          {puzzleName} Â· {difficulty}
         </p>
         <p className="text-3xl font-bold text-primary tabular-nums mb-6 text-center">
           {formatTime(elapsedMs)}
@@ -89,7 +89,7 @@ export function WinModal({
             disabled={!playerName.trim() || saved}
             className="w-full rounded-lg border border-border bg-secondary px-4 py-2.5 text-sm font-semibold text-secondary-foreground hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {saved ? "Saved to leaderboard ✓" : "Save score"}
+            {saved ? "Saved to leaderboard âœ“" : "Save score"}
           </button>
         </div>
 
@@ -113,3 +113,4 @@ export function WinModal({
     </div>
   );
 }
+
