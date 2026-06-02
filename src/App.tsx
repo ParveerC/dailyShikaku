@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { Controls } from "./components/Controls";
 import { Grid } from "./components/Grid";
 import { PuzzleBoard } from "./components/PuzzleBoard";
@@ -6,6 +6,7 @@ import { Leaderboard } from "./components/Leaderboard";
 import { WinModal } from "./components/WinModal";
 import { useLeaderboard } from "./hooks/useLeaderboard";
 import { useShikakuGame } from "./hooks/useShikakuGame";
+
 
 export default function App() {
   const [darkMode, setDarkMode] = useState(() => {
@@ -61,7 +62,7 @@ export default function App() {
           />
         </PuzzleBoard>
 
-        <Leaderboard difficulty={game.difficulty} entries={leaderboard.entries} />
+        <Leaderboard currentDifficulty={game.difficulty} />
       </main>
 
       {game.solved && (
@@ -79,3 +80,4 @@ export default function App() {
     </div>
   );
 }
+
