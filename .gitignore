@@ -1,0 +1,5 @@
+node_modules
+dist
+scripts/generated.json
+*.local
+.DS_Store

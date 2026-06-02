@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/gamelogic.ts","./src/main.tsx","./src/puzzles.ts","./src/types.ts","./src/vite-env.d.ts","./src/components/controls.tsx","./src/components/grid.tsx","./src/components/winmodal.tsx","./src/hooks/useshikakugame.ts"],"version":"5.8.3"}
