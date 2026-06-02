@@ -12,6 +12,7 @@ Divide the grid into non-overlapping rectangles. Each rectangle must contain **e
 - Click + drag to place rectangles with live valid/invalid feedback
 - Click a placed rectangle to remove it
 - Solve timer starts when you click **Start puzzle** (grid is blurred until then)
+- **Leaderboard** — save your solve time with your name (stored in browser for now)
 - Progress counter, reset, and new puzzle
 - Light / dark theme using the project color tokens
 - All puzzles are **solver-verified** (every layout has at least one valid solution)

@@ -37,6 +37,7 @@ export function useShikakuGame(initialDifficulty: Difficulty = "5x5") {
   const [previewValidation, setPreviewValidation] = useState<ValidationResult>("neutral");
   const [solved, setSolved] = useState(false);
   const [started, setStarted] = useState(false);
+  const [startedAt, setStartedAt] = useState<number | null>(null);
 
   const { elapsedMs, reset: resetTimer } = useTimer(
     started && !solved,
@@ -64,10 +65,13 @@ export function useShikakuGame(initialDifficulty: Difficulty = "5x5") {
     setPreviewValidation("neutral");
     setSolved(false);
     setStarted(false);
+    setStartedAt(null);
     resetTimer();
   }, [resetTimer]);
 
   const startPuzzle = useCallback(() => {
+    const now = Date.now();
+    setStartedAt(now);
     resetTimer();
     setStarted(true);
   }, [resetTimer]);
@@ -176,6 +180,7 @@ export function useShikakuGame(initialDifficulty: Difficulty = "5x5") {
     previewValidation,
     solved,
     started,
+    startedAt,
     elapsedMs,
     rectColors: RECT_COLORS,
     changeDifficulty,

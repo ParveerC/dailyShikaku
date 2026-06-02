@@ -2,7 +2,9 @@ import { useEffect, useState } from "react";
 import { Controls } from "./components/Controls";
 import { Grid } from "./components/Grid";
 import { PuzzleBoard } from "./components/PuzzleBoard";
+import { Leaderboard } from "./components/Leaderboard";
 import { WinModal } from "./components/WinModal";
+import { useLeaderboard } from "./hooks/useLeaderboard";
 import { useShikakuGame } from "./hooks/useShikakuGame";
 
 export default function App() {
@@ -15,6 +17,7 @@ export default function App() {
   });
 
   const game = useShikakuGame("5x5");
+  const leaderboard = useLeaderboard(game.difficulty);
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", darkMode);
@@ -57,11 +60,18 @@ export default function App() {
             onRemoveRect={game.removeRectangle}
           />
         </PuzzleBoard>
+
+        <Leaderboard difficulty={game.difficulty} entries={leaderboard.entries} />
       </main>
 
       {game.solved && (
         <WinModal
           elapsedMs={game.elapsedMs}
+          difficulty={game.difficulty}
+          puzzleId={game.puzzle.id}
+          puzzleName={game.puzzle.name}
+          startedAt={game.startedAt}
+          onSubmitScore={leaderboard.submitScore}
           onNewPuzzle={game.newPuzzle}
           onPlayAgain={game.resetPlacements}
         />

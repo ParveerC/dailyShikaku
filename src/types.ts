@@ -31,3 +31,24 @@ export interface CellBounds {
 }
 
 export type ValidationResult = "valid" | "invalid" | "neutral";
+
+/** Recorded when a puzzle is solved — ready to send to an API or store locally. */
+export interface Score {
+  id: string;
+  playerName: string;
+  difficulty: Difficulty;
+  puzzleId: string;
+  puzzleName: string;
+  elapsedMs: number;
+  completedAt: string;
+}
+
+export interface ScoreInput {
+  playerName: string;
+  difficulty: Difficulty;
+  puzzleId: string;
+  puzzleName: string;
+  elapsedMs: number;
+  startedAt: number;
+  completedAt: number;
+}
