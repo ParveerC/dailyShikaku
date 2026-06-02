@@ -1,6 +1,6 @@
 import type { Difficulty, Score, ScoreInput } from "../types";
+import { supabase } from "../utils/supabase";
 
-const STORAGE_KEY = "shikaku-leaderboard";
 const PLAYER_NAME_KEY = "shikaku-player-name";
 
 export function buildScore(input: ScoreInput): Score {
@@ -15,33 +15,37 @@ export function buildScore(input: ScoreInput): Score {
   };
 }
 
-function readAll(): Score[] {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw) as Score[];
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
-    return [];
-  }
+export async function saveScore(score: Score): Promise<void> {
+  await supabase.from("scores").insert({
+    id: score.id,
+    player_name: score.playerName,
+    difficulty: score.difficulty,
+    puzzle_id: score.puzzleId,
+    puzzle_name: score.puzzleName,
+    elapsed_ms: score.elapsedMs,
+    completed_at: score.completedAt,
+  });
 }
 
-function writeAll(scores: Score[]): void {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(scores));
-}
+export async function getLeaderboard(difficulty: Difficulty, limit = 25): Promise<Score[]> {
+  const { data } = await supabase
+    .from("scores")
+    .select()
+    .eq("difficulty", difficulty)
+    .neq("player_name", "")
+    .order("elapsed_ms", { ascending: true })
+    .limit(limit);
 
-/** Save locally; swap for `submitScoreToApi` when you add a backend. */
-export function saveScoreLocal(score: Score): void {
-  const all = readAll();
-  all.push(score);
-  writeAll(all);
-}
-
-export function getLeaderboard(difficulty: Difficulty, limit = 25): Score[] {
-  return readAll()
-    .filter((s) => s.difficulty === difficulty && s.playerName.length > 0)
-    .sort((a, b) => a.elapsedMs - b.elapsedMs)
-    .slice(0, limit);
+  if (!data) return [];
+  return data.map((row) => ({
+    id: row.id,
+    playerName: row.player_name,
+    difficulty: row.difficulty,
+    puzzleId: row.puzzle_id,
+    puzzleName: row.puzzle_name,
+    elapsedMs: row.elapsed_ms,
+    completedAt: row.completed_at,
+  }));
 }
 
 export function getStoredPlayerName(): string {
@@ -50,15 +54,4 @@ export function getStoredPlayerName(): string {
 
 export function setStoredPlayerName(name: string): void {
   localStorage.setItem(PLAYER_NAME_KEY, name.trim());
-}
-
-/** Payload shape for a future POST /api/scores */
-export function toApiPayload(score: Score) {
-  return {
-    playerName: score.playerName,
-    difficulty: score.difficulty,
-    puzzleId: score.puzzleId,
-    elapsedMs: score.elapsedMs,
-    completedAt: score.completedAt,
-  };
 }
