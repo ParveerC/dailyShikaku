@@ -3,6 +3,14 @@ import type { Difficulty } from "../types";
 import { formatTime } from "../utils/formatTime";
 import { HelpModal } from "./HelpModal";
 
+type Theme = "light" | "dark" | "cream";
+
+const THEME_LABEL: Record<Theme, string> = {
+  light: "☾ Dark",
+  dark: "☕ Cream",
+  cream: "☀ Light",
+};
+
 interface ControlsProps {
   difficulty: Difficulty;
   placedCount: number;
@@ -14,8 +22,8 @@ interface ControlsProps {
   onDifficultyChange: (d: Difficulty) => void;
   onReset: () => void;
   onNewPuzzle: () => void;
-  darkMode: boolean;
-  onToggleDark: () => void;
+  theme: Theme;
+  onCycleTheme: () => void;
 }
 
 const DIFFICULTIES: { id: Difficulty; label: string }[] = [
@@ -36,8 +44,8 @@ export function Controls({
   onDifficultyChange,
   onReset,
   onNewPuzzle,
-  darkMode,
-  onToggleDark,
+  theme,
+  onCycleTheme,
 }: ControlsProps) {
   const [showHelp, setShowHelp] = useState(false);
 
@@ -62,11 +70,11 @@ export function Controls({
             </button>
             <button
               type="button"
-              onClick={onToggleDark}
+              onClick={onCycleTheme}
               className="rounded-lg border border-border bg-card px-3 py-2 text-sm text-card-foreground hover:bg-accent transition-colors"
-              aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
+              aria-label="Switch theme"
             >
-              {darkMode ? "☀ Light" : "☾ Dark"}
+              {THEME_LABEL[theme]}
             </button>
           </div>
         </div>

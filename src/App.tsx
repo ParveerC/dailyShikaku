@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Controls } from "./components/Controls";
 import { Grid } from "./components/Grid";
 import { PuzzleBoard } from "./components/PuzzleBoard";
@@ -7,22 +7,33 @@ import { WinModal } from "./components/WinModal";
 import { useLeaderboard } from "./hooks/useLeaderboard";
 import { useShikakuGame } from "./hooks/useShikakuGame";
 
+type Theme = "light" | "dark" | "cream";
+
+const THEME_CYCLE: Theme[] = ["light", "dark", "cream"];
+
+function getInitialTheme(): Theme {
+  if (typeof window === "undefined") return "light";
+  if (document.documentElement.classList.contains("dark")) return "dark";
+  if (document.documentElement.classList.contains("cream")) return "cream";
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+}
 
 export default function App() {
-  const [darkMode, setDarkMode] = useState(() => {
-    if (typeof window === "undefined") return false;
-    return (
-      window.matchMedia("(prefers-color-scheme: dark)").matches ||
-      document.documentElement.classList.contains("dark")
-    );
-  });
+  const [theme, setTheme] = useState<Theme>(getInitialTheme);
 
   const game = useShikakuGame("5x5");
   const leaderboard = useLeaderboard(game.difficulty);
 
   useEffect(() => {
-    document.documentElement.classList.toggle("dark", darkMode);
-  }, [darkMode]);
+    const html = document.documentElement;
+    html.classList.remove("dark", "cream");
+    if (theme === "dark") html.classList.add("dark");
+    if (theme === "cream") html.classList.add("cream");
+  }, [theme]);
+
+  const cycleTheme = () => {
+    setTheme((t) => THEME_CYCLE[(THEME_CYCLE.indexOf(t) + 1) % THEME_CYCLE.length]);
+  };
 
   return (
     <div className="min-h-dvh bg-background text-foreground">
@@ -38,8 +49,8 @@ export default function App() {
           onDifficultyChange={game.changeDifficulty}
           onReset={game.resetPlacements}
           onNewPuzzle={game.newPuzzle}
-          darkMode={darkMode}
-          onToggleDark={() => setDarkMode((d) => !d)}
+          theme={theme}
+          onCycleTheme={cycleTheme}
         />
 
         <PuzzleBoard
@@ -80,4 +91,3 @@ export default function App() {
     </div>
   );
 }
-
