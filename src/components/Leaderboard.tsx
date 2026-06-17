@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import type { Difficulty, Score } from "../types";
 import { getLeaderboard } from "../lib/scores";
 import { formatTime } from "../utils/formatTime";

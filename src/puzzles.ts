@@ -1,4 +1,4 @@
-import type { Difficulty, Puzzle } from "./types";
+﻿import type { Difficulty, Puzzle } from "./types";
 
 export const PUZZLES: Record<Difficulty, Puzzle[]> = {
   "5x5": [

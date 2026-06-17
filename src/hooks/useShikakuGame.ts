@@ -2,8 +2,8 @@ import { useCallback, useMemo, useState } from "react";
 import { useTimer } from "./useTimer";
 import {
   boundsFromDrag,
-  getCellOwner,
   isPuzzleSolved,
+  rectsOverlap,
   validatePlacement,
 } from "../gameLogic";
 import { getRandomPuzzle } from "../puzzles";
@@ -107,20 +107,19 @@ export function useShikakuGame(initialDifficulty: Difficulty = "5x5") {
 
   const startDrag = useCallback((row: number, col: number) => {
     if (!started) return;
-    const owner = getCellOwner(row, col, placed);
-    if (owner) return;
     setDragStart({ row, col });
     setDragEnd({ row, col });
     setPreviewValidation("neutral");
     setSolved(false);
-  }, [placed, started]);
+  }, [started]);
 
   const updateDrag = useCallback(
     (row: number, col: number) => {
       if (!dragStart) return;
       setDragEnd({ row, col });
       const bounds = boundsFromDrag(dragStart, { row, col });
-      setPreviewValidation(validatePlacement(bounds, puzzle, placed));
+      const overlapping = placed.filter((r) => rectsOverlap(bounds, r));
+      setPreviewValidation(validatePlacement(bounds, puzzle, placed, overlapping.map((r) => r.id)));
     },
     [dragStart, puzzle, placed]
   );
@@ -133,7 +132,8 @@ export function useShikakuGame(initialDifficulty: Difficulty = "5x5") {
     }
 
     const bounds = boundsFromDrag(dragStart, dragEnd);
-    const validation = validatePlacement(bounds, puzzle, placed);
+    const overlapping = placed.filter((r) => rectsOverlap(bounds, r));
+    const validation = validatePlacement(bounds, puzzle, placed, overlapping.map((r) => r.id));
 
     if (validation === "valid") {
       const clues = puzzle.clues.filter(
@@ -148,7 +148,8 @@ export function useShikakuGame(initialDifficulty: Difficulty = "5x5") {
         ...bounds,
         clueValue: clues[0].value,
       };
-      const next = [...placed, rect];
+      const without = placed.filter((r) => !overlapping.includes(r));
+      const next = [...without, rect];
       setPlaced(next);
       checkWin(next);
     }

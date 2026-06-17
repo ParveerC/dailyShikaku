@@ -47,7 +47,7 @@ export function validatePlacement(
   bounds: CellBounds,
   puzzle: Puzzle,
   placed: Rectangle[],
-  excludeId?: string
+  excludeIds: string[] = []
 ): ValidationResult {
   if (!isWithinGrid(bounds, puzzle.rows, puzzle.cols)) return "invalid";
 
@@ -57,7 +57,7 @@ export function validatePlacement(
   if (rectArea(bounds) !== inside[0].value) return "invalid";
 
   for (const r of placed) {
-    if (r.id === excludeId) continue;
+    if (excludeIds.includes(r.id)) continue;
     if (rectsOverlap(bounds, r)) return "invalid";
   }
 
@@ -90,7 +90,7 @@ export function isPuzzleSolved(puzzle: Puzzle, placed: Rectangle[]): boolean {
         covered.add(`${row},${col}`);
       }
     }
-    if (validatePlacement(r, puzzle, placed, r.id) !== "valid") return false;
+    if (validatePlacement(r, puzzle, placed, [r.id]) !== "valid") return false;
   }
 
   return covered.size === puzzle.rows * puzzle.cols;
